@@ -72,7 +72,7 @@ const ClozeQuestion = ({
       underlinedWords,
       answerText,
     },"cloze")
-  }, [questionData]);
+  }, [underlinedWords, answerText]);
 
   // Function to apply underline
   const toggleUnderline = () => {

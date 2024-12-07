@@ -59,7 +59,7 @@ const ComprehensionQuestion = ({
       paragraph,
       questions,
     },"comprehension")
-  }, [questionData]);
+  }, [paragraph, questions]);
 
   return (
     <div className="comprehension-question">

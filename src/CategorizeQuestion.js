@@ -72,7 +72,7 @@ const CategorizeQuestion = ({
   };
   useEffect(() => {
     handleSave(questionIndex, { categories, items }, "categorize");
-  }, [questionData]);
+  }, [categories, items]);
 
   return (
     <div className="categorize">
