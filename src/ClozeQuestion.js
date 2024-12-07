@@ -67,6 +67,11 @@ const ClozeQuestion = ({
     setUnderlinedWords(questionData.underlinedWords || []);
     setQuestionText(questionData.questionText || "");
     setAnswerText(questionData.answerText || "");
+    handleSave(questionIndex, {
+      questionText,
+      underlinedWords,
+      answerText,
+    },"cloze")
   }, [questionData]);
 
   // Function to apply underline
@@ -188,19 +193,6 @@ const ClozeQuestion = ({
           )}
         </div>
       </DndProvider>
-
-      <button
-        onClick={() =>
-          handleSave(questionIndex, {
-            questionText,
-            underlinedWords,
-            answerText,
-          },"cloze")
-        }
-      >
-        Save Question
-      </button>
-
       <button className="delete-question" onClick={onDelete}>
         Delete Question
       </button>

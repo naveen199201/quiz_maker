@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "./CategorizeQuestion.css";
@@ -45,9 +45,7 @@ const CategorizeQuestion = ({
       (category) => category !== categoryName
     );
     setCategories(updatedCategories);
-    const updatedItems = items.filter(
-      (item) => item.category !== categoryName
-    );
+    const updatedItems = items.filter((item) => item.category !== categoryName);
     setitems(updatedItems); // Also remove items belonging to deleted category
   };
 
@@ -72,6 +70,9 @@ const CategorizeQuestion = ({
     );
     setitems(updatedItems);
   };
+  useEffect(() => {
+    handleSave(questionIndex, { categories, items }, "categorize");
+  }, [questionData]);
 
   return (
     <div className="categorize">
@@ -150,7 +151,6 @@ const CategorizeQuestion = ({
                   </button>
                 </div>
               ))
-              
             )}
           </div>
 
@@ -179,14 +179,6 @@ const CategorizeQuestion = ({
           </div>
         </div>
       </DndProvider>
-      <button
-        onClick={() =>
-          handleSave(questionIndex, { categories, items }, "categorize")
-        }
-      >
-        Save Question
-      </button>
-
       <button className="delete-question" onClick={onDelete}>
         Delete Question
       </button>

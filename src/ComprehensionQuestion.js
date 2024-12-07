@@ -53,6 +53,13 @@ const ComprehensionQuestion = ({
     };
     setQuestions([...questions, duplicatedQuestion]);
   };
+  
+  useEffect(() => {
+    handleSave(questionIndex, {
+      paragraph,
+      questions,
+    },"comprehension")
+  }, [questionData]);
 
   return (
     <div className="comprehension-question">
@@ -124,17 +131,6 @@ const ComprehensionQuestion = ({
       <button className="add-question" onClick={addQuestion}>
         Add Question
       </button>
-      <button
-        onClick={() =>
-          handleSave(questionIndex, {
-            paragraph,
-            questions,
-          },"comprehension")
-        }
-      >
-        Save Question
-      </button>
-
       <button className="delete-question" onClick={onDelete}>
         Delete Question
       </button>
