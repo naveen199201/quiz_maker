@@ -12,9 +12,9 @@ import axios from "axios";
 // const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
 const baseUrl = "http://localhost:5000/api/questions"
 const FormEditor = () => {
-  const [clozeQuestions, setClozeQuestions] = useState([]);
-  const [categorizeQuestions, setCategorizeQuestions] = useState([]);
-  const [comprehensionQuestions, setComprehensionQuestions] = useState([]);
+  const [clozeQuestions, setClozeQuestions] = useState([<ClozeQuestion />]);
+  const [categorizeQuestions, setCategorizeQuestions] = useState([<CategorizeQuestion />]);
+  const [comprehensionQuestions, setComprehensionQuestions] = useState([<ComprehensionQuestion />]);
 
   const addQuestion = (type) => {
     switch (type) {
@@ -29,7 +29,7 @@ const FormEditor = () => {
       case "categorize": {
         const updatedQuestions = [
           ...categorizeQuestions,
-          { categories: [], answers: [] },
+          { categories: [], items: [] },
         ];
         setCategorizeQuestions(updatedQuestions);
         break;
@@ -119,6 +119,7 @@ const FormEditor = () => {
       <FormHeader />
       <QuestionTypeSelector onAddQuestion={addQuestion} />
       <DndProvider backend={HTML5Backend}>
+        
         {categorizeQuestions.map((question, index) => {
           return (
             <CategorizeQuestion

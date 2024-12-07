@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 
 const QuizForm = ({ questions }) => {
-  const [answers, setAnswers] = useState({});
+  const [items, setitems] = useState({});
 
   const handleAnswerChange = (questionId, answer) => {
-    setAnswers((prev) => ({
+    setitems((prev) => ({
       ...prev,
       [questionId]: answer,
     }));
   };
 
   const handleSubmit = () => {
-    console.log("Submitted Answers:", answers);
-    alert("Your answers have been submitted!");
+    console.log("Submitted items:", items);
+    alert("Your items have been submitted!");
   };
 
   return (
@@ -25,7 +25,7 @@ const QuizForm = ({ questions }) => {
             {question.type === "Categorize" && (
               <CategorizeStudentQuestion
                 question={question}
-                answer={answers[question.id] || {}}
+                answer={items[question.id] || {}}
                 onAnswerChange={(answer) =>
                   handleAnswerChange(question.id, answer)
                 }
@@ -34,7 +34,7 @@ const QuizForm = ({ questions }) => {
             {question.type === "Cloze" && (
               <ClozeStudentQuestion
                 question={question}
-                answer={answers[question.id] || ""}
+                answer={items[question.id] || ""}
                 onAnswerChange={(answer) =>
                   handleAnswerChange(question.id, answer)
                 }
@@ -43,7 +43,7 @@ const QuizForm = ({ questions }) => {
             {question.type === "Comprehension" && (
               <ComprehensionStudentQuestion
                 question={question}
-                answer={answers[question.id] || {}}
+                answer={items[question.id] || {}}
                 onAnswerChange={(answer) =>
                   handleAnswerChange(question.id, answer)
                 }

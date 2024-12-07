@@ -29,7 +29,7 @@ const FormHeader = () => {
       {
         questionText: "Categorize the items.",
         categories: ["Fruits", "Animals"],
-        answers: [
+        items: [
           { category: "Fruits", answer: "Apple" },
           { category: "Animals", answer: "Dog" },
         ],

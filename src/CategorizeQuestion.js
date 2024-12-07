@@ -10,7 +10,7 @@ const CategorizeQuestion = ({
   questionData,
 }) => {
   const [categories, setCategories] = useState(questionData.categories || []);
-  const [answers, setAnswers] = useState(questionData.answers || []);
+  const [items, setitems] = useState(questionData.items || []);
   const [newCategory, setNewCategory] = useState("");
   const [newItem, setNewItem] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -26,10 +26,10 @@ const CategorizeQuestion = ({
   // Add new item with category
   const handleAddItem = () => {
     if (newItem.trim() && selectedCategory) {
-      setAnswers([
-        ...answers,
+      setitems([
+        ...items,
         {
-          id: answers.length + 1,
+          id: items.length + 1,
           answer: newItem.trim(),
           category: selectedCategory,
         },
@@ -45,32 +45,32 @@ const CategorizeQuestion = ({
       (category) => category !== categoryName
     );
     setCategories(updatedCategories);
-    const updatedItems = answers.filter(
+    const updatedItems = items.filter(
       (item) => item.category !== categoryName
     );
-    setAnswers(updatedItems); // Also remove answers belonging to deleted category
+    setitems(updatedItems); // Also remove items belonging to deleted category
   };
 
   // Handle deleting item
   const handleDeleteItem = (itemId) => {
-    const updatedItems = answers.filter((item) => item.id !== itemId);
-    setAnswers(updatedItems);
+    const updatedItems = items.filter((item) => item.id !== itemId);
+    setitems(updatedItems);
   };
 
   // Handle editing item
   const handleEditItem = (itemId, newName) => {
-    const updatedItems = answers.map((item) =>
+    const updatedItems = items.map((item) =>
       item.id === itemId ? { ...item, answer: newName } : item
     );
-    setAnswers(updatedItems);
+    setitems(updatedItems);
   };
 
   // Handle changing category for item
   const handleCategoryChangeForItem = (itemId, newCategory) => {
-    const updatedItems = answers.map((item) =>
+    const updatedItems = items.map((item) =>
       item.id === itemId ? { ...item, category: newCategory } : item
     );
-    setAnswers(updatedItems);
+    setitems(updatedItems);
   };
 
   return (
@@ -118,11 +118,11 @@ const CategorizeQuestion = ({
 
           {/* Items Section */}
           <h4>Items</h4>
-          <div className="answers-section">
-            {answers.length === 0 ? (
-              <p>Please add answers.</p>
+          <div className="items-section">
+            {items.length === 0 ? (
+              <p>Please add items.</p>
             ) : (
-              answers.map((item, index) => (
+              items.map((item, index) => (
                 <div key={item.id} className="item">
                   <input
                     type="text"
@@ -181,7 +181,7 @@ const CategorizeQuestion = ({
       </DndProvider>
       <button
         onClick={() =>
-          handleSave(questionIndex, { categories, answers }, "categorize")
+          handleSave(questionIndex, { categories, items }, "categorize")
         }
       >
         Save Question
