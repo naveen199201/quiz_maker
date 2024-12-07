@@ -1,56 +1,80 @@
 import React, { useState } from "react";
+import CategorizeStudentQuestion from "./CategorizeStudentQuestion";
+import ClozeStudentQuestionWrapper from "./ClozeStudentQuestion";
+import ComprehensionStudentQuestion from "./ComprehensionStudentQuestion";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import axios from "axios";
+import "./QuizForm.css";
 
 const QuizForm = ({ questions }) => {
-  const [items, setitems] = useState({});
-
-  const handleAnswerChange = (questionId, answer) => {
-    setitems((prev) => ({
+  const [answers, setAnswers] = useState({});
+  const baseUrl = "http://localhost:5000/api/submissions";
+  const handleAnswerChange = (question, answer) => {
+    setAnswers((prev) => ({
       ...prev,
-      [questionId]: answer,
+      [question]: answer,
     }));
   };
 
   const handleSubmit = () => {
-    console.log("Submitted items:", items);
-    alert("Your items have been submitted!");
+    console.log("Submitted Answers:", answers);
+    axios.post(baseUrl, { 'data': answers });
+    alert("Your answers have been submitted!");
   };
-
   return (
     <div className="student-quiz">
       <h1>Quiz</h1>
       <form onSubmit={(e) => e.preventDefault()}>
-        {questions.map((question, index) => (
-          <div key={question.id} className="question-section">
-            <h3>Question {index + 1}</h3>
-            {question.type === "Categorize" && (
+        {/* Categorize Questions */}
+        <div>
+          {questions.categorizeQuestions.map((question, index) => (
+            <div key={index} className="question-section">
+              <h3>Question {index+1}</h3>
               <CategorizeStudentQuestion
                 question={question}
-                answer={items[question.id] || {}}
-                onAnswerChange={(answer) =>
-                  handleAnswerChange(question.id, answer)
-                }
+                answer={answers[question._id] || {}}
+                onAnswerChange={handleAnswerChange}
               />
-            )}
-            {question.type === "Cloze" && (
-              <ClozeStudentQuestion
-                question={question}
-                answer={items[question.id] || ""}
-                onAnswerChange={(answer) =>
-                  handleAnswerChange(question.id, answer)
-                }
-              />
-            )}
-            {question.type === "Comprehension" && (
+            </div>
+          ))}
+        </div>
+
+        {/* Cloze Questions */}
+        <div>
+          {questions.clozeQuestions.map((question, index) => (
+            <div key={index} className="question-section">
+              <h3>Question {index+1}</h3>
+              <DndProvider backend={HTML5Backend}>
+                <ClozeStudentQuestionWrapper
+                  question={question}
+                  answer={answers[question._id] || ""}
+                  onAnswerChange={(answer) =>
+                    handleAnswerChange(question._id, answer)
+                  }
+                />
+              </DndProvider>
+            </div>
+          ))}
+        </div>
+
+        {/* Comprehension Questions */}
+        <div>
+          {questions.comprehensionQuestions.map((question, index) => (
+            <div key={index} className="question-section">
+              <h3>Question {index + 1}</h3>
               <ComprehensionStudentQuestion
                 question={question}
-                answer={items[question.id] || {}}
+                answer={answers[question._id] || {}}
                 onAnswerChange={(answer) =>
-                  handleAnswerChange(question.id, answer)
+                  handleAnswerChange(question._id, answer)
                 }
               />
-            )}
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Submit Button */}
         <button type="button" onClick={handleSubmit}>
           Submit Quiz
         </button>

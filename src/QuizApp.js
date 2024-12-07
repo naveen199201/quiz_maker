@@ -1,10 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FormEditor from "./FormEditor";
 import QuizForm from "./QuizForm";
+import axios from "axios";
 
 const QuizApp = () => {
+  const baseUrl = "http://localhost:5000/api/questions";
+  const [questions, setQuestions] = useState({});
   const [activeTab, setActiveTab] = useState("formEditor");
-  const [questions, setQuestions] = useState([]); // Shared state for questions
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get(baseUrl);
+        console.log(response.data);
+        setQuestions(response.data);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    fetchQuestions();
+  }, []); // Empty dependency array ensures this runs once when the component mounts.
 
   const handleQuestionsUpdate = (updatedQuestions) => {
     setQuestions(updatedQuestions);

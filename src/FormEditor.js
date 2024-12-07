@@ -6,15 +6,14 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import CategorizeQuestion from "./CategorizeQuestion";
 import ClozeQuestion from "./ClozeQuestion";
 import ComprehensionQuestion from "./ComprehensionQuestion";
-import FormPreview from "./FormPreview";
 import axios from "axios";
 
 // const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
 const baseUrl = "http://localhost:5000/api/questions"
 const FormEditor = () => {
-  const [clozeQuestions, setClozeQuestions] = useState([<ClozeQuestion />]);
-  const [categorizeQuestions, setCategorizeQuestions] = useState([<CategorizeQuestion />]);
-  const [comprehensionQuestions, setComprehensionQuestions] = useState([<ComprehensionQuestion />]);
+  const [clozeQuestions, setClozeQuestions] = useState([]);
+  const [categorizeQuestions, setCategorizeQuestions] = useState([]);
+  const [comprehensionQuestions, setComprehensionQuestions] = useState([]);
 
   const addQuestion = (type) => {
     switch (type) {
@@ -40,7 +39,6 @@ const FormEditor = () => {
           { paragraph: "", questions: [] },
         ];
         setComprehensionQuestions(updatedQuestions);
-        console.log(updatedQuestions);
         break;
       }
       default: {
@@ -87,7 +85,6 @@ const FormEditor = () => {
   };
 
   const handleSaveQuestion = (index, questionData, type) => {
-    console.log(index, questionData, type)
     switch (type) {
       case "cloze": {
         let updatedQuestions = [...clozeQuestions];
