@@ -195,7 +195,7 @@ const ClozeQuestion = ({
             questionText,
             underlinedWords,
             answerText,
-          })
+          },"cloze")
         }
       >
         Save Question

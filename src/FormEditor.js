@@ -9,7 +9,8 @@ import ComprehensionQuestion from "./ComprehensionQuestion";
 import FormPreview from "./FormPreview";
 import axios from "axios";
 
-const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
+// const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
+const baseUrl = "http://localhost:5000/api/questions"
 const FormEditor = () => {
   const [clozeQuestions, setClozeQuestions] = useState([]);
   const [categorizeQuestions, setCategorizeQuestions] = useState([]);
@@ -39,6 +40,7 @@ const FormEditor = () => {
           { paragraph: "", questions: [] },
         ];
         setComprehensionQuestions(updatedQuestions);
+        console.log(updatedQuestions);
         break;
       }
       default: {
@@ -80,10 +82,12 @@ const FormEditor = () => {
       categorizeQuestions,
       comprehensionQuestions,
     };
+    console.log(postData);
     axios.post(baseUrl, postData);
   };
 
   const handleSaveQuestion = (index, questionData, type) => {
+    console.log(index, questionData, type)
     switch (type) {
       case "cloze": {
         let updatedQuestions = [...clozeQuestions];
@@ -121,9 +125,7 @@ const FormEditor = () => {
               key={index}
               questionIndex={index}
               questionData={question}
-              handleSave={() =>
-                handleSaveQuestion(index, question, "categorize")
-              }
+              handleSave={handleSaveQuestion}
               onDelete={() => handleDeleteQuestion(index, "categorize")}
             />
           );
@@ -134,7 +136,7 @@ const FormEditor = () => {
               key={index}
               questionIndex={index}
               questionData={question}
-              handleSave={() => handleSaveQuestion(index, question, "cloze")}
+              handleSave={ handleSaveQuestion}
               onDelete={() => handleDeleteQuestion(index, "cloze")}
             />
           );
@@ -145,9 +147,7 @@ const FormEditor = () => {
               key={index}
               questionIndex={index}
               questionData={question}
-              handleSave={() =>
-                handleSaveQuestion(index, question, "comprehension")
-              }
+              handleSave={handleSaveQuestion}
               onDelete={() => handleDeleteQuestion(index, "comprehension")}
             />
           );

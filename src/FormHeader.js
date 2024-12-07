@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import QuizForm from "./QuizForm";
+import './formheader.css';
 
 const FormHeader = () => {
   const [headerImage, setHeaderImage] = useState(null);
-  const [formTitle, setFormTitle] = useState("");
+  const [formTitle, setFormTitle] = useState("Untitled Quiz");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -60,11 +61,14 @@ const FormHeader = () => {
         placeholder="Enter form title"
         value={formTitle}
         onChange={(e) => setFormTitle(e.target.value)}
-      />
-      <input type="file" onChange={handleImageChange} />
-      {headerImage && <img src={headerImage} alt="Header" />}
-      <button>Quiz</button>
-      {/* <QuizForm questions={questions} /> */}
+      ></input>
+      <div className="form-options">
+        <button>Save</button>
+      {/* <input type="file" onChange={handleImageChange} />
+      {headerImage && <img src={headerImage} alt="Header" />} */}
+      
+      </div>
+      
     </div>
   );
 };

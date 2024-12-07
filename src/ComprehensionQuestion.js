@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import "./ComprehensionQuestion.css";
 
-const ComprehensionQuestion = (
+const ComprehensionQuestion = ({
   questionIndex,
   onDelete,
   handleSave,
-  questionData
-) => {
-  const [paragraph, setParagraph] = useState(questionData.paragraph | "");
-  const [questions, setQuestions] = useState(questionData.questions | []);
+  questionData,
+}) => {
+  const [paragraph, setParagraph] = useState(questionData.paragraph || "");
+  const [questions, setQuestions] = useState(questionData.questions || []);
 
   const addQuestion = () => {
     setQuestions([
@@ -129,7 +129,7 @@ const ComprehensionQuestion = (
           handleSave(questionIndex, {
             paragraph,
             questions,
-          })
+          },"comprehension")
         }
       >
         Save Question
