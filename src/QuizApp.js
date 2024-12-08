@@ -4,15 +4,16 @@ import QuizForm from "./QuizForm";
 import axios from "axios";
 
 const QuizApp = () => {
-  const baseUrl = "http://localhost:5000/api/questions";
+  // const baseUrl = "http://localhost:5000/api/questions";
+  const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
   const [questions, setQuestions] = useState({});
   const [activeTab, setActiveTab] = useState("formEditor");
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const params= {quiz:false};
+      const params = { quiz: false };
       try {
-        const response = await axios.get(baseUrl,  params);
+        const response = await axios.get(baseUrl, params);
         console.log(response.data);
         setQuestions(response.data);
       } catch (error) {
@@ -49,8 +50,8 @@ const QuizApp = () => {
       <div className="tab-content">
         {activeTab === "formEditor" && (
           <FormEditor
-            // questions={questions}
-            // onQuestionsChange={handleQuestionsUpdate}
+          // questions={questions}
+          // onQuestionsChange={handleQuestionsUpdate}
           />
         )}
         {activeTab === "quiz" && <QuizForm questions={questions} />}

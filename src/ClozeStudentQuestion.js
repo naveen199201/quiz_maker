@@ -44,7 +44,7 @@ const Option = ({ word, isUsed }) => {
 };
 
 // **ClozeStudentQuestion Component**
-const ClozeStudentQuestion = ({ question, onAnswerChange }) => {
+const ClozeStudentQuestion = ({ question,reviewedQuestions,toggleReview, onAnswerChange }) => {
   const { questionText, underlinedWords } = question;
 
   // Split the question text to create blanks
@@ -75,7 +75,9 @@ const ClozeStudentQuestion = ({ question, onAnswerChange }) => {
   return (
     <div className="cloze-student-question">
      
-
+     <button onClick={() => toggleReview(question._id)}>
+          {reviewedQuestions.includes(question._id) ? "Unmark" : "Mark for Review"}
+      </button>
       <div className="refresh-container">
         <button className="refresh-button" onClick={handleRefresh}>
           Refresh

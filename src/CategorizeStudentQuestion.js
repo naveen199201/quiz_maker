@@ -112,7 +112,7 @@ const CategoryArea = ({ category, onDropItem, items }) => {
 };
 
 // Main CategorizeStudentQuestion Component
-const CategorizeStudentQuestion = ({ question, onAnswerChange }) => {
+const CategorizeStudentQuestion = ({ question,reviewedQuestions,toggleReview, onAnswerChange }) => {
   // Initialize the state with empty categories
   const [answers, setAnswers] = useState(() => {
     const initialAnswers = {};
@@ -152,6 +152,9 @@ const CategorizeStudentQuestion = ({ question, onAnswerChange }) => {
 
   return (
     <div style={{ marginBottom: "20px" }}>
+      <button onClick={() => toggleReview(question._id)}>
+          {reviewedQuestions.includes(question._id) ? "Unmark" : "Mark for Review"}
+      </button>
       {/* Refresh Button */}
       <button
         onClick={refreshQuestion}

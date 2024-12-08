@@ -6,16 +6,16 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import CategorizeQuestion from "./CategorizeQuestion";
 import ClozeQuestion from "./ClozeQuestion";
 import ComprehensionQuestion from "./ComprehensionQuestion";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
-// const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
-const baseUrl = "http://localhost:5000/api/questions";
+const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
+// const baseUrl = "http://localhost:5000/api/questions";
 const FormEditor = () => {
   const [categorizeQuestions, setCategorizeQuestions] = useState([]);
   const [comprehensionQuestions, setComprehensionQuestions] = useState([]);
   const [clozeQuestions, setClozeQuestions] = useState([]);
-  const [questions, setQuestions]= useState({});
+  const [questions, setQuestions] = useState({});
   // const handleQuestionsUpdate = (updatedQuestions) => {
   //   setQuestions(updatedQuestions);
   // };
@@ -27,9 +27,9 @@ const FormEditor = () => {
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const params= {quiz:false};
+      const params = { quiz: false };
       try {
-        const response = await axios.get(baseUrl,  params);
+        const response = await axios.get(baseUrl, params);
         console.log(response.data);
         setQuestions(response.data);
         setClozeQuestions(response.data?.clozeQuestions);
@@ -48,7 +48,12 @@ const FormEditor = () => {
       case "cloze": {
         const updatedQuestions = [
           ...clozeQuestions,
-          { questionText: "", underlinedWords: [], answerText: "",'_id':uuidv4() },
+          {
+            questionText: "",
+            underlinedWords: [],
+            answerText: "",
+            _id: uuidv4(),
+          },
         ];
         setClozeQuestions(updatedQuestions);
         break;
@@ -56,7 +61,7 @@ const FormEditor = () => {
       case "categorize": {
         const updatedQuestions = [
           ...categorizeQuestions,
-          { categories: [], items: [],'_id':uuidv4() },
+          { categories: [], items: [], _id: uuidv4() },
         ];
         setCategorizeQuestions(updatedQuestions);
         break;
@@ -64,7 +69,7 @@ const FormEditor = () => {
       case "comprehension": {
         const updatedQuestions = [
           ...comprehensionQuestions,
-          { paragraph: "", questions: [],'_id':uuidv4() },
+          { paragraph: "", questions: [], _id: uuidv4() },
         ];
         setComprehensionQuestions(updatedQuestions);
         break;
@@ -144,39 +149,42 @@ const FormEditor = () => {
       <FormHeader />
       <QuestionTypeSelector onAddQuestion={addQuestion} />
       <DndProvider backend={HTML5Backend}>
-        { categorizeQuestions?.length>0 &&  categorizeQuestions.map((question, index) => {
-          return (
-            <CategorizeQuestion
-              key={index}
-              questionIndex={index}
-              questionData={question}
-              handleSave={handleSaveQuestion}
-              onDelete={() => handleDeleteQuestion(index, "categorize")}
-            />
-          );
-        })}
-        {clozeQuestions?.length > 0 && clozeQuestions.map((question, index) => {
-          return (
-            <ClozeQuestion
-              key={index}
-              questionIndex={index}
-              questionData={question}
-              handleSave={handleSaveQuestion}
-              onDelete={() => handleDeleteQuestion(index, "cloze")}
-            />
-          );
-        })}
-        {comprehensionQuestions?.length > 0 && comprehensionQuestions.map((question, index) => {
-          return (
-            <ComprehensionQuestion
-              key={index}
-              questionIndex={index}
-              questionData={question}
-              handleSave={handleSaveQuestion}
-              onDelete={() => handleDeleteQuestion(index, "comprehension")}
-            />
-          );
-        })}
+        {categorizeQuestions?.length > 0 &&
+          categorizeQuestions.map((question, index) => {
+            return (
+              <CategorizeQuestion
+                key={index}
+                questionIndex={index}
+                questionData={question}
+                handleSave={handleSaveQuestion}
+                onDelete={() => handleDeleteQuestion(index, "categorize")}
+              />
+            );
+          })}
+        {clozeQuestions?.length > 0 &&
+          clozeQuestions.map((question, index) => {
+            return (
+              <ClozeQuestion
+                key={index}
+                questionIndex={index}
+                questionData={question}
+                handleSave={handleSaveQuestion}
+                onDelete={() => handleDeleteQuestion(index, "cloze")}
+              />
+            );
+          })}
+        {comprehensionQuestions?.length > 0 &&
+          comprehensionQuestions.map((question, index) => {
+            return (
+              <ComprehensionQuestion
+                key={index}
+                questionIndex={index}
+                questionData={question}
+                handleSave={handleSaveQuestion}
+                onDelete={() => handleDeleteQuestion(index, "comprehension")}
+              />
+            );
+          })}
       </DndProvider>
       {/* <FormPreview questions={questions} /> */}
       <button onClick={handleSubmitQuestions}>Submit</button>
