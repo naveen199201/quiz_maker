@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./ComprehensionQuestion.css";
+import { FaRegImage } from "react-icons/fa6";
 
 const ComprehensionQuestion = ({
   questionIndex,
@@ -9,6 +10,7 @@ const ComprehensionQuestion = ({
 }) => {
   const [paragraph, setParagraph] = useState(questionData.paragraph || "");
   const [questions, setQuestions] = useState(questionData.questions || []);
+  const [image, setImage] = useState(questionData.image || "");
 
   const addQuestion = () => {
     setQuestions([
@@ -53,11 +55,32 @@ const ComprehensionQuestion = ({
     };
     setQuestions([...questions, duplicatedQuestion]);
   };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    console.log('file')
+    if (file) {
+      console.log('file name')
+      const formData = new FormData();
+      formData.append("image", file);
   
+      try {
+        const response = await axios.post("http://localhost:5000/imageupload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+  
+        const { imageId } = response.data; // MongoDB ID of the image
+        const imageUrl = `http://localhost:5000/api/uploads/${imageId}`;
+        setImage(imageUrl); // Set the image URL for display
+      } catch (error) {
+        console.error("Error uploading the image", error);
+      }
+    }
+  };
   useEffect(() => {
     handleSave(questionIndex, {
       paragraph,
-      questions,
+      questions, image
     },"comprehension")
   }, [paragraph, questions]);
 
@@ -71,6 +94,31 @@ const ComprehensionQuestion = ({
         rows={5}
         className="paragraph-input"
       />
+      <label htmlFor={`q${questionIndex}`} className="image-upload-label">
+                <FaRegImage
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "10px",
+                    fontSize: "24px",
+                  }}
+                />
+              </label>
+              <input
+                type="file"
+                id={`q${questionIndex}`}
+                style={{ display: "none" }} // Hide the file input
+                accept="image/*"
+                onChange={handleImageUpload}
+              />
+
+              {/* Display the uploaded image */}
+              {image && (
+                <img
+                  src={image}
+                  alt="Uploaded"
+                  style={{ marginTop: "10px", maxWidth: "200px" }}
+                />
+              )}
 
       <h4>Questions</h4>
       {questions.map((question, qIndex) => (

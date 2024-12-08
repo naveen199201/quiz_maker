@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import FormHeader from "./FormHeader";
+import React, {useEffect, useState } from "react";
 import QuestionTypeSelector from "./QuestionTypeSelector";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -12,18 +11,10 @@ import axios from "axios";
 const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
 // const baseUrl = "http://localhost:5000/api/questions";
 const FormEditor = () => {
+  const [questions, setQuestions]= useState({});
+  const [clozeQuestions, setClozeQuestions] = useState([]);
   const [categorizeQuestions, setCategorizeQuestions] = useState([]);
   const [comprehensionQuestions, setComprehensionQuestions] = useState([]);
-  const [clozeQuestions, setClozeQuestions] = useState([]);
-  const [questions, setQuestions] = useState({});
-  // const handleQuestionsUpdate = (updatedQuestions) => {
-  //   setQuestions(updatedQuestions);
-  // };
-  // useEffect(() => {
-  //   console.log("ques");
-  //   console.log(questions);
-  //   setClozeQuestions(questions?.clozeQuestions || []);
-  // },[]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -48,12 +39,7 @@ const FormEditor = () => {
       case "cloze": {
         const updatedQuestions = [
           ...clozeQuestions,
-          {
-            questionText: "",
-            underlinedWords: [],
-            answerText: "",
-            _id: uuidv4(),
-          },
+          { questionText: "", underlinedWords: [], answerText: "",  image:'','_id':uuidv4() },
         ];
         setClozeQuestions(updatedQuestions);
         break;
@@ -61,7 +47,7 @@ const FormEditor = () => {
       case "categorize": {
         const updatedQuestions = [
           ...categorizeQuestions,
-          { categories: [], items: [], _id: uuidv4() },
+          { categories: [], items: [] , description:'', image:'','_id':uuidv4() },
         ];
         setCategorizeQuestions(updatedQuestions);
         break;
@@ -69,7 +55,7 @@ const FormEditor = () => {
       case "comprehension": {
         const updatedQuestions = [
           ...comprehensionQuestions,
-          { paragraph: "", questions: [], _id: uuidv4() },
+          { paragraph: "", questions: [], image:'', '_id':uuidv4() },
         ];
         setComprehensionQuestions(updatedQuestions);
         break;
@@ -146,7 +132,7 @@ const FormEditor = () => {
 
   return (
     <div className="form-editor">
-      <FormHeader />
+      {/* <FormHeader /> */}
       <QuestionTypeSelector onAddQuestion={addQuestion} />
       <DndProvider backend={HTML5Backend}>
         {categorizeQuestions?.length > 0 &&

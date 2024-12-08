@@ -2,19 +2,25 @@ import React, { useState, useEffect } from "react";
 import { Editor, EditorState, RichUtils, convertToRaw, ContentState } from "draft-js";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { IoMdAddCircle } from "react-icons/io";
+import { HiOutlineDuplicate } from "react-icons/hi";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { FaRegImage } from "react-icons/fa6";
+
+
 import "draft-js/dist/Draft.css";
 import "./ClozeQuestion.css";
 
 const TextEditor = ({ editorState, setEditorState, toggleUnderline }) => (
   <div className="text-editor">
     <div className="toolbar">
-      <button onClick={toggleUnderline}>Underline</button>
+      <button onClick={toggleUnderline}>U</button>
     </div>
     <div className="editor-container">
       <Editor
         editorState={editorState}
         onChange={setEditorState}
-        placeholder="Type your text here..."
+        placeholder="Underline the words here to convert them into blanks..."
       />
     </div>
   </div>
@@ -54,25 +60,38 @@ const ClozeQuestion = ({
   questionData,
 }) => {
   const [editorState, setEditorState] = useState(() => {
+    
     // Check if questionData.answerText exists, and initialize accordingly
     const contentState = questionData?.answerText
       ? ContentState.createFromText(questionData.answerText) // If there's answerText, initialize with it
       : ContentState.createFromText(""); // If no answerText, initialize with empty text
     return EditorState.createWithContent(contentState);
   });
-  // const [editorState, setEditorState] = useState(() => {
-  //   const contentState = ContentState.createFromText( questionData.answerText);
-  //   return EditorState.createWithContent(contentState);
-  // } || EditorState.createEmpty());
-  // const [editorState, setEditorState] = useState(() => {
-  //   const contentState = initialText
-  //     ? ContentState.createFromText(initialText)  // Initialize with the initial text if provided
-  //     : ContentState.createFromText(""); // Otherwise, start with an empty string
-  //   return EditorState.createWithContent(contentState);
-  // });
+  const [image, setImage] = useState(questionData.image || "");
   const [underlinedWords, setUnderlinedWords] = useState(
     questionData.underlinedWords || []
   );
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    console.log('file')
+    if (file) {
+      console.log('file name')
+      const formData = new FormData();
+      formData.append("image", file);
+  
+      try {
+        const response = await axios.post("http://localhost:5000/imageupload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+  
+        const { imageId } = response.data; // MongoDB ID of the image
+        const imageUrl = `http://localhost:5000/api/uploads/${imageId}`;
+        setImage(imageUrl); // Set the image URL for display
+      } catch (error) {
+        console.error("Error uploading the image", error);
+      }
+    }
+  };
   const [questionText, setQuestionText] = useState(
     questionData.questionText || ""
   );
@@ -87,6 +106,7 @@ const ClozeQuestion = ({
       questionText,
       underlinedWords,
       answerText,
+      image,
     },"cloze")
   }, [underlinedWords, answerText]);
 
@@ -167,51 +187,96 @@ const ClozeQuestion = ({
   };
 
   return (
-    <div className="cloze-question">
-      <h3>Cloze Question</h3>
+    <div className="cloze-question-container">
+      <div className="cloze-question">
+        <h3>Cloze Question</h3>
 
-      {/* Text Editor Section */}
-      <TextEditor
-        editorState={editorState}
-        setEditorState={handleEditorChange}
-        toggleUnderline={toggleUnderline}
-        multiLine={false}
-      />
+        {/* Question Input Box */}
 
-      {/* Question Input Box */}
-      <div className="question-section">
-        <h4>Question</h4>
-        <input
-          type="text"
-          value={questionText}
-          readOnly
-          className="preview-textbox"
-          placeholder="Question will appear here..."
-        />
-      </div>
 
-      {/* Options Section */}
-      <DndProvider backend={HTML5Backend}>
-        <div className="options-section">
-          <h4>Options</h4>
-          {underlinedWords.length > 0 ? (
-            underlinedWords.map((word, index) => (
-              <DraggableOption
-                key={index}
-                word={word}
-                index={index}
-                moveOption={moveOption}
-                deleteOption={deleteOption}
+        <div className="question-section">
+          <h4>Question</h4>
+          <div className="input-group">
+            <label htmlFor="Preview" className="input-label">
+              Preview <span className="required-star">*</span>
+            </label>
+            <input
+              type="text"
+              value={questionText}
+              readOnly
+              className="preview-textbox"
+              placeholder="Preview"
+            />
+          </div>
+          <label htmlFor={`q${questionIndex}`} className="image-upload-label">
+                <FaRegImage
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "10px",
+                    fontSize: "24px",
+                  }}
+                />
+              </label>
+              <input
+                type="file"
+                id={`q${questionIndex}`}
+                style={{ display: "none" }} // Hide the file input
+                accept="image/*"
+                onChange={handleImageUpload}
               />
-            ))
-          ) : (
-            <p>No options yet. Underline text to create options.</p>
-          )}
+
+              {/* Display the uploaded image */}
+              {image && (
+                <img
+                  src={image}
+                  alt="Uploaded"
+                  style={{ marginTop: "10px", maxWidth: "200px" }}
+                />
+              )}
+          <div className="input-group">
+            <label htmlFor="Sentence" className="input-label">
+              Sentence <span className="required-star">*</span>
+            </label>
+            <TextEditor
+              editorState={editorState}
+              setEditorState={handleEditorChange}
+              toggleUnderline={toggleUnderline}
+              multiLine={false}
+            />
+          </div>
+
+          {/* Options Section */}
+          <DndProvider backend={HTML5Backend}>
+            <div className="options-section">
+              <h4>Options</h4>
+              {underlinedWords.length > 0 ? (
+                underlinedWords.map((word, index) => (
+                  <DraggableOption
+                    key={index}
+                    word={word}
+                    index={index}
+                    moveOption={moveOption}
+                    deleteOption={deleteOption}
+                  />
+                ))
+              ) : (
+                <p>No options yet. Underline text to create options.</p>
+              )}
+            </div>
+          </DndProvider>
         </div>
-      </DndProvider>
-      <button className="delete-question" onClick={onDelete}>
-        Delete Question
-      </button>
+      </div>
+      <div className="action-buttons">
+        <button className="add-question" onClick={onDelete}>
+          <IoMdAddCircle />
+        </button>
+        <button className="duplicate-question" onClick={onDelete}>
+          <HiOutlineDuplicate />
+        </button>
+        <button className="delete-question" onClick={onDelete}>
+          <RiDeleteBinLine />
+        </button>
+      </div>
     </div>
   );
 };
