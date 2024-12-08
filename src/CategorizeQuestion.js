@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { v4 as uuidv4 } from 'uuid';
 import "./CategorizeQuestion.css";
 
 const CategorizeQuestion = ({
@@ -29,7 +30,7 @@ const CategorizeQuestion = ({
       setitems([
         ...items,
         {
-          id: items.length + 1,
+          // id: uuidv4(),
           answer: newItem.trim(),
           category: selectedCategory,
         },
@@ -51,14 +52,14 @@ const CategorizeQuestion = ({
 
   // Handle deleting item
   const handleDeleteItem = (itemId) => {
-    const updatedItems = items.filter((item) => item.id !== itemId);
+    const updatedItems = items.filter((item) => item._id !== itemId);
     setitems(updatedItems);
   };
 
   // Handle editing item
   const handleEditItem = (itemId, newName) => {
     const updatedItems = items.map((item) =>
-      item.id === itemId ? { ...item, answer: newName } : item
+      item._id === itemId ? { ...item, answer: newName } : item
     );
     setitems(updatedItems);
   };
@@ -66,7 +67,7 @@ const CategorizeQuestion = ({
   // Handle changing category for item
   const handleCategoryChangeForItem = (itemId, newCategory) => {
     const updatedItems = items.map((item) =>
-      item.id === itemId ? { ...item, category: newCategory } : item
+      item._id === itemId ? { ...item, category: newCategory } : item
     );
     setitems(updatedItems);
   };
@@ -124,11 +125,11 @@ const CategorizeQuestion = ({
               <p>Please add items.</p>
             ) : (
               items.map((item, index) => (
-                <div key={item.id} className="item">
+                <div key={item._id} className="item">
                   <input
                     type="text"
                     value={item.answer} // Use `item.answer` instead of `item.name`
-                    onChange={(e) => handleEditItem(item.id, e.target.value)}
+                    onChange={(e) => handleEditItem(item._id, e.target.value)}
                   />
                   <select
                     value={item.category}
@@ -145,7 +146,7 @@ const CategorizeQuestion = ({
                   </select>
                   <button
                     className="delete-item"
-                    onClick={() => handleDeleteItem(item.id)}
+                    onClick={() => handleDeleteItem(item._id)}
                   >
                     x
                   </button>

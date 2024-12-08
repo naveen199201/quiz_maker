@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Editor, EditorState, RichUtils, convertToRaw } from "draft-js";
+import { Editor, EditorState, RichUtils, convertToRaw, ContentState } from "draft-js";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "draft-js/dist/Draft.css";
@@ -53,7 +53,23 @@ const ClozeQuestion = ({
   handleSave,
   questionData,
 }) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(() => {
+    // Check if questionData.answerText exists, and initialize accordingly
+    const contentState = questionData?.answerText
+      ? ContentState.createFromText(questionData.answerText) // If there's answerText, initialize with it
+      : ContentState.createFromText(""); // If no answerText, initialize with empty text
+    return EditorState.createWithContent(contentState);
+  });
+  // const [editorState, setEditorState] = useState(() => {
+  //   const contentState = ContentState.createFromText( questionData.answerText);
+  //   return EditorState.createWithContent(contentState);
+  // } || EditorState.createEmpty());
+  // const [editorState, setEditorState] = useState(() => {
+  //   const contentState = initialText
+  //     ? ContentState.createFromText(initialText)  // Initialize with the initial text if provided
+  //     : ContentState.createFromText(""); // Otherwise, start with an empty string
+  //   return EditorState.createWithContent(contentState);
+  // });
   const [underlinedWords, setUnderlinedWords] = useState(
     questionData.underlinedWords || []
   );

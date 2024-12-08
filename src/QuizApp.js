@@ -10,8 +10,9 @@ const QuizApp = () => {
 
   useEffect(() => {
     const fetchQuestions = async () => {
+      const params= {quiz:false};
       try {
-        const response = await axios.get(baseUrl);
+        const response = await axios.get(baseUrl,  params);
         console.log(response.data);
         setQuestions(response.data);
       } catch (error) {
@@ -48,8 +49,8 @@ const QuizApp = () => {
       <div className="tab-content">
         {activeTab === "formEditor" && (
           <FormEditor
-            questions={questions}
-            onQuestionsChange={handleQuestionsUpdate}
+            // questions={questions}
+            // onQuestionsChange={handleQuestionsUpdate}
           />
         )}
         {activeTab === "quiz" && <QuizForm questions={questions} />}

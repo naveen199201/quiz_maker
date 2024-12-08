@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ComprehensionQuestion.css";
 
 const ComprehensionQuestion = ({
@@ -74,7 +74,7 @@ const ComprehensionQuestion = ({
 
       <h4>Questions</h4>
       {questions.map((question, qIndex) => (
-        <div key={question.id} className="question-block">
+        <div key={question._id} className="question-block">
           <div className="question-header">
             <input
               type="text"
@@ -101,10 +101,10 @@ const ComprehensionQuestion = ({
 
           <div className="options-block">
             {question.options.map((option, oIndex) => (
-              <div key={oIndex} className="option-row">
+              <div key={`${question._id}-${qIndex}-${oIndex}`} className="option-row">
                 <input
                   type="radio"
-                  name={`correctOption-${qIndex}`}
+                  name={`correctOption-${question._id}-${oIndex}`}
                   checked={question.correctOption === oIndex}
                   onChange={() => updateCorrectOption(qIndex, oIndex)}
                 />

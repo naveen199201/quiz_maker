@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormHeader from "./FormHeader";
 import QuestionTypeSelector from "./QuestionTypeSelector";
 import { DndProvider } from "react-dnd";
@@ -6,21 +6,49 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import CategorizeQuestion from "./CategorizeQuestion";
 import ClozeQuestion from "./ClozeQuestion";
 import ComprehensionQuestion from "./ComprehensionQuestion";
+import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 
 // const baseUrl = "https://backend-eight-virid-92.vercel.app/api/questions";
-const baseUrl = "http://localhost:5000/api/questions"
+const baseUrl = "http://localhost:5000/api/questions";
 const FormEditor = () => {
-  const [clozeQuestions, setClozeQuestions] = useState([]);
   const [categorizeQuestions, setCategorizeQuestions] = useState([]);
   const [comprehensionQuestions, setComprehensionQuestions] = useState([]);
+  const [clozeQuestions, setClozeQuestions] = useState([]);
+  const [questions, setQuestions]= useState({});
+  // const handleQuestionsUpdate = (updatedQuestions) => {
+  //   setQuestions(updatedQuestions);
+  // };
+  // useEffect(() => {
+  //   console.log("ques");
+  //   console.log(questions);
+  //   setClozeQuestions(questions?.clozeQuestions || []);
+  // },[]);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      const params= {quiz:false};
+      try {
+        const response = await axios.get(baseUrl,  params);
+        console.log(response.data);
+        setQuestions(response.data);
+        setClozeQuestions(response.data?.clozeQuestions);
+        setCategorizeQuestions(response.data?.categorizeQuestions);
+        setComprehensionQuestions(response.data?.comprehensionQuestions);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
 
   const addQuestion = (type) => {
     switch (type) {
       case "cloze": {
         const updatedQuestions = [
           ...clozeQuestions,
-          { questionText: "", underlinedWords: [], answerText: "" },
+          { questionText: "", underlinedWords: [], answerText: "",'_id':uuidv4() },
         ];
         setClozeQuestions(updatedQuestions);
         break;
@@ -28,7 +56,7 @@ const FormEditor = () => {
       case "categorize": {
         const updatedQuestions = [
           ...categorizeQuestions,
-          { categories: [], items: [] },
+          { categories: [], items: [],'_id':uuidv4() },
         ];
         setCategorizeQuestions(updatedQuestions);
         break;
@@ -36,7 +64,7 @@ const FormEditor = () => {
       case "comprehension": {
         const updatedQuestions = [
           ...comprehensionQuestions,
-          { paragraph: "", questions: [] },
+          { paragraph: "", questions: [],'_id':uuidv4() },
         ];
         setComprehensionQuestions(updatedQuestions);
         break;
@@ -116,8 +144,7 @@ const FormEditor = () => {
       <FormHeader />
       <QuestionTypeSelector onAddQuestion={addQuestion} />
       <DndProvider backend={HTML5Backend}>
-        
-        {categorizeQuestions.map((question, index) => {
+        { categorizeQuestions?.length>0 &&  categorizeQuestions.map((question, index) => {
           return (
             <CategorizeQuestion
               key={index}
@@ -128,18 +155,18 @@ const FormEditor = () => {
             />
           );
         })}
-        {clozeQuestions.map((question, index) => {
+        {clozeQuestions?.length > 0 && clozeQuestions.map((question, index) => {
           return (
             <ClozeQuestion
               key={index}
               questionIndex={index}
               questionData={question}
-              handleSave={ handleSaveQuestion}
+              handleSave={handleSaveQuestion}
               onDelete={() => handleDeleteQuestion(index, "cloze")}
             />
           );
         })}
-        {comprehensionQuestions.map((question, index) => {
+        {comprehensionQuestions?.length > 0 && comprehensionQuestions.map((question, index) => {
           return (
             <ComprehensionQuestion
               key={index}
