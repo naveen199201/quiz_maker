@@ -6,6 +6,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { HiOutlineDuplicate } from "react-icons/hi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FaRegImage } from "react-icons/fa6";
+import axios from "axios";
 
 
 import "draft-js/dist/Draft.css";
@@ -99,9 +100,7 @@ const ClozeQuestion = ({
 
   useEffect(() => {
     // Initialize local state when props change
-    setUnderlinedWords(questionData.underlinedWords || []);
-    setQuestionText(questionData.questionText || "");
-    setAnswerText(questionData.answerText || "");
+    
     handleSave(questionIndex, {
       questionText,
       underlinedWords,
